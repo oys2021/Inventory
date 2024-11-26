@@ -1,0 +1,41 @@
+/* <styl type="text/css"> */
+.footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
+  }
+@media  only screen and (max-width: 500px) {
+  .footer{
+    display: none;
+  }
+  #payments{
+    display: none;
+  }
+  .hide{
+    display: none;
+  }
+   .topbanner{
+    display: block;
+  }
+  .details{
+    width: 100%!important;
+  }
+}
+ @media  only screen and (min-width: 501px) {
+        .topbanner{
+    display: none;
+    height: 0px!important
+  }
+  .uglogo{
+    float: right;
+  }
+  .sticky-wrapper{
+    display: none;
+  }
+  }
+.header-navbar.navbar-brand-center .navbar-header{
+  left:41%!important;
+}

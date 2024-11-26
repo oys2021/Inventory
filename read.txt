@@ -1,0 +1,96 @@
+-- Creating the Categories Table (Optional)
+CREATE TABLE Categories (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(100)
+);
+
+-- Creating the Products Table
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(255),
+    category_id INT,
+    price DECIMAL(10, 2),
+    quantity_in_stock INT,
+    expiration_date DATE,
+    created_at TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);
+
+-- Creating the Restocks Table
+CREATE TABLE Restocks (
+    restock_id INT PRIMARY KEY,
+    product_id INT,
+    restock_quantity INT,
+    restock_date DATE,
+    created_at TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+-- Creating the Sales Table
+CREATE TABLE Sales (
+    sale_id INT PRIMARY KEY,
+    product_id INT,
+    sale_quantity INT,
+    sale_price DECIMAL(10, 2),
+    sale_date DATE,
+    total_revenue DECIMAL(10, 2),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+
+CREATE TABLE Inventory (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(255),
+    category_id INT,
+    quantity_in_stock INT,
+    last_restock_date DATE,
+    created_at TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);
+
+
+hjmj pdxt ccii ppju
+
+outlook
+
+
+public bool createuser(string username, string email, int role, string firstname, string lastname, string phone)
+{
+    string password = GenerateRandomPassword(12);  // Generate the password
+    Console.WriteLine("Generated Password: " + password);
+    
+    // Insert user into the database
+    using (var connection = new SqlConnection(_connectionstring))
+    {
+        var query = "INSERT INTO Users (Username, Email, PasswordHash, RoleId, IsActive, firstname, lastname, phone) " +
+                    "VALUES(@Username, @Email, @PasswordHash, @RoleId, @IsActive, @firstname, @lastname, @phone)";
+        var command = new SqlCommand(query, connection);
+        command.Parameters.AddWithValue("@Username", username);
+        command.Parameters.AddWithValue("@Email", email);
+        command.Parameters.AddWithValue("@PasswordHash", HashPassword(password)); // Store hashed password
+        command.Parameters.AddWithValue("@RoleId", role);
+        command.Parameters.AddWithValue("@IsActive", 1);
+        command.Parameters.AddWithValue("@firstname", firstname);
+        command.Parameters.AddWithValue("@lastname", lastname);
+        command.Parameters.AddWithValue("@phone", phone);
+
+        connection.Open();
+        var result = command.ExecuteNonQuery();
+
+        // If the insertion was successful, send the email
+        if (result > 0)
+        {
+            // Create an instance of EmailHelper and send the email
+            var emailHelper = new EmailHelper(_configuration);
+            emailHelper.SendEmail(email, "Your Account Details", 
+                $"Hello {firstname} {lastname},\n\nYour account has been created successfully.\n" +
+                $"Your temporary password is: {password}\n\nPlease log in and change your password as soon as possible.");
+            
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
